@@ -1,0 +1,13 @@
+{
+  "python_compile": "PASS",
+  "parser_selftest": "PASS",
+  "month_range_count": 35,
+  "candidate_input_rows": 906,
+  "candidate_rows_without_official_issue_id": 906,
+  "workflow_dispatch_only": "PASS",
+  "repository_write_permission": "NONE",
+  "archive_filename_encoding": "PASS_ASCII_CSV_PATH",
+  "workflow_input_path_check": "PASS",
+  "archive_content_check": "PASS_NO_PYCACHE",
+  "github_hosted_runner_execution": "NOT_RUN_REQUIRES_REPOSITORY_ACCESS"
+}

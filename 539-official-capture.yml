@@ -1,0 +1,51 @@
+name: 539 Official API Evidence Capture v10
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'probe = 2026-11 only; full = 2024-01 through 2026-11'
+        required: true
+        default: 'probe'
+        type: choice
+        options:
+          - probe
+          - full
+  # Deliberately no schedule until a successful manual run is reviewed.
+
+permissions:
+  contents: read
+
+concurrency:
+  group: 539-official-capture
+  cancel-in-progress: false
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Install dependency
+        run: python -m pip install --disable-pip-version-check requests==2.32.5
+      - name: Run parser and schema self-test
+        run: python -c "from fetch_official_daily539_api_v10 import selftest; print(selftest())"
+      - name: Capture official-site API evidence
+        run: >-
+          python fetch_official_daily539_api_v10.py
+          --mode "${{ inputs.mode }}"
+          --input candidates_906.csv
+          --out 539_v10_capture
+      - name: Upload immutable evidence artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: 539-v10-official-api-evidence-${{ github.run_id }}
+          path: 539_v10_capture/
+          if-no-files-found: warn
+          retention-days: 90
